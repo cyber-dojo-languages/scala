@@ -1,5 +1,5 @@
-# Scala
+[![CircleCI](https://circleci.com/gh/cyber-dojo-languages/scala.svg?style=svg)](https://circleci.com/gh/cyber-dojo-languages/scala)
 
-![Build Status](https://travis-ci.org/cyber-dojo-languages/scala.svg?branch=master)
+## image_name="cyberdojofoundation/scala"
 
 ![cyber-dojo.org home page](https://github.com/cyber-dojo/cyber-dojo/blob/master/shared/home_page_snapshot.png)
