@@ -1,36 +1,13 @@
-FROM amazoncorretto:25-alpine3.24-jdk
+# The floating tag of the same alpine-musl JDK the java image uses, so a
+# rebuild picks up the newest stable JDK. It is published as an index holding
+# real amd64 and arm64 layers, so each runner builds from binaries its own
+# kernel can exec.
+FROM bellsoft/liberica-openjdk-alpine-musl:latest
 LABEL maintainer=jon@jaggersoft.com
 
-ENV SCALA_VERSION=3.9.0 \
-    SCALA_HOME=/usr/share/scala
+ENV SCALA_HOME=/usr/share/scala
 
-# The compiler is a JVM program, so the distribution below is the whole of it:
-# a launcher script and a jar, on top of the JDK this image already has.
-#
-# The distribution's other launcher, scala, is scala-cli, which resolves
-# dependencies over the network. A kata has no network, so a run reaching for
-# it would stall rather than compile. Its jar is 122MB of the 566MB this image
-# would otherwise weigh, and it goes in the same layer that unpacks it, since
-# a later layer deleting a file does not make an image any smaller. Removing
-# the launcher too leaves "scala: not found", which says what has happened;
-# leaving it behind without its jar would not.
-RUN apk add --update bash \
-  && apk add --virtual=build-dependencies wget ca-certificates \
-  && wget "https://github.com/scala/scala3/releases/download/${SCALA_VERSION}/scala3-${SCALA_VERSION}.zip" \
-  && unzip -q "scala3-${SCALA_VERSION}.zip" -d /tmp/scala3 \
-  && mv "/tmp/scala3/scala3-${SCALA_VERSION}" "${SCALA_HOME}" \
-  && rm "${SCALA_HOME}/libexec/scala-cli.jar" \
-  && rm "${SCALA_HOME}/bin/scala" "${SCALA_HOME}/bin/scala.bat" \
-  && rm "scala3-${SCALA_VERSION}.zip" \
-  && apk del build-dependencies \
-  && rm -rf /tmp/* /var/cache/apk/*
+COPY install.sh .
+RUN ./install.sh && rm ./install.sh
 
 ENV PATH=${PATH}:${SCALA_HOME}/bin
-
-# The standard library, which every compiled Scala program needs on its
-# classpath to run. The distribution keeps it among the compiler's own
-# dependencies, under a path naming the version; copying it here gives a test
-# framework image, and the cyber-dojo.sh reading it, one stable place to name.
-RUN mkdir /scala \
-  && cp "${SCALA_HOME}/maven2/org/scala-lang/scala3-library_3/${SCALA_VERSION}/scala3-library_3-${SCALA_VERSION}.jar" /scala/ \
-  && cp "${SCALA_HOME}/maven2/org/scala-lang/scala-library/${SCALA_VERSION}/scala-library-${SCALA_VERSION}.jar" /scala/
