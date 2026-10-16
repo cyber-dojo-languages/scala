@@ -11,7 +11,7 @@ readonly MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Written down here so the gate fails when the floating base image moves to a
 # different scala. Reading it from the image instead would compare the image
 # against itself and pass whatever the move brought in.
-readonly EXPECTED=3.9
+readonly EXPECTED=3.10
 
 # Asks the installed compiler, so the gate fails when the scala the image can
 # actually run is not the one named above. Matching on the leading major.minor

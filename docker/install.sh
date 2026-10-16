@@ -51,7 +51,15 @@ cp "${SCALA_HOME}/maven2/org/scala-lang/scala-library/${SCALA_VERSION}/scala-lib
 # Read by check_version.sh and by the images built on this one, so that all of
 # them state the version this image holds rather than repeating a number
 # written down somewhere else.
-echo "{\"scala\":\"${SCALA_VERSION}\"}" > /versions.json
+cat > /versions.json <<EOF
+{
+  "language": {
+    "name": "Scala",
+    "version": "${SCALA_VERSION}"
+  },
+  "test_frameworks": []
+}
+EOF
 
 apk del build-dependencies
 rm -rf /tmp/* /var/cache/apk/*
