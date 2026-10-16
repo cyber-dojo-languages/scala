@@ -48,9 +48,8 @@ mkdir /scala
 cp "${SCALA_HOME}/maven2/org/scala-lang/scala3-library_3/${SCALA_VERSION}/scala3-library_3-${SCALA_VERSION}.jar" /scala/
 cp "${SCALA_HOME}/maven2/org/scala-lang/scala-library/${SCALA_VERSION}/scala-library-${SCALA_VERSION}.jar" /scala/
 
-# Read by check_version.sh and by the images built on this one, so that all of
-# them state the version this image holds rather than repeating a number
-# written down somewhere else.
+# Read by the images built on this one, so that all of them state the version
+# this image holds rather than repeating a number written down somewhere else.
 cat > /versions.json <<EOF
 {
   "language": {
